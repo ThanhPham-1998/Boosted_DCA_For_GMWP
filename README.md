@@ -29,6 +29,6 @@ Generalized Multi-Source Weber Problems (GMWP) — một bài toán tối ưu ph
 ### 4. UI
 
 ```bash
-    streamlist run app.py
+    streamlit run app.py
 
 ```
