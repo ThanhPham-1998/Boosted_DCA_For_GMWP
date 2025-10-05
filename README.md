@@ -1,6 +1,6 @@
-# 🚀 Boosted DCA for Generalized Mean-Width Problem (GMWP)
+# 🚀 Boosted DCA for Generalized Multi-Source Weber Problems (GMWP)
 Dự án này triển khai và mở rộng các biến thể của Boosted Difference of Convex Algorithm (BDCA) nhằm giải bài toán 
-Generalized Mean-Width Problem (GMWP) — một bài toán tối ưu phi lồi có nhiều ứng dụng trong học máy, xử lý dữ liệu và phân cụm.
+Generalized Multi-Source Weber Problems (GMWP) — một bài toán tối ưu phi lồi có nhiều ứng dụng trong học máy, xử lý dữ liệu và phân cụm.
 
 ## ⚙️ Cài đặt môi trường
 
