@@ -28,8 +28,7 @@ class DCA(BaseDCA):
             iter_count: Number of inner iterations
             norm_iters: List of norm differences
             cost_iters: List of cost values
-
-            logs: Dictionary containing logs for this inner loop
+            solution: result of iterations
         """
         k, d = x.shape
         m = a.shape[0]
@@ -153,7 +152,7 @@ class DCA(BaseDCA):
         return cost(a=a, x=x, ord=ord)
 
 
-class ContrainedDCA(DCA):
+class ConstrainedDCA(DCA):
     def _inner_loop(self, a, x, mu, proj_func, ord=1):
         """
         Inner loop of the Constrained DCA algorithm.
