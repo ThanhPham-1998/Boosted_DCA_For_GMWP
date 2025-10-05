@@ -145,7 +145,7 @@ class BaseDCA:
         """
         raise NotImplementedError("Subclasses must implement _compute_z method")
     
-    def _compute_cost(self, a, x, mu=None):
+    def _compute_cost(self, a, x, ord=1):
         """
         Compute the cost function.
         
@@ -574,7 +574,7 @@ class BaseConstrainedBDCA(BaseBDCA):
 
 class BaseConstrainedBDCAV2(BaseBDCA):
     @profiler
-    def run(self, a, x_init, proj_func, use_self_adaptive=True):
+    def run(self, a, x_init, proj_func, ord=1, use_self_adaptive=True):
         """
         Run the Constrained BDCA algorithm.
         
@@ -583,7 +583,7 @@ class BaseConstrainedBDCAV2(BaseBDCA):
             x_init: numpy array of shape (k, d) representing initial k centers in R^d
             proj_func: Function handle for projection operator
             use_self_adaptive: Flag to turn on self-adaptivity for lambda in BDCA
-            
+            ord: norm type
         Returns:
             x: numpy array of shape (k, d) representing optimized centers
             iter_count: Number of outer iterations
@@ -610,6 +610,7 @@ class BaseConstrainedBDCAV2(BaseBDCA):
                 x=x,
                 mu=mu,
                 proj_func=proj_func,
+                ord=ord,
                 use_self_adaptive=use_self_adaptive
             )
             iter_logs[iter_count] = {"mu": mu}
@@ -620,7 +621,8 @@ class BaseConstrainedBDCAV2(BaseBDCA):
             
             # Update for next iteration
             x_old = x.copy()
-            mu = max(mu * delta, muf)
+            # mu = max(mu * delta, muf)
+            mu = update_mu_exponential(iter_count, mu, delta)
             self.config.parameters.tau = sigma * tau
             # Check convergence
             flag = norm_diff >= self.config.parameters.outer_norm and mu > muf and tau < tauf

@@ -182,13 +182,13 @@ class ConstrainedBDCA(BDCA):
         while flag:
             x_old = x.copy()
             iter_solution = {}
-            cost_old, indices = self._compute_cost(a, x, ord)
+            cost_old, indices =self._compute_cost(a, x, ord)
             iter_solution["indices"] = indices
             cost_iters.append(cost_old)
-            
+
             w = self._compute_w(x, a, proj_func, mu, ord)
             z = self._compute_z(x, a, proj_func, mu, ord)
-            
+
             u = proj_func(x)
             y = tau * u + w + z
             x_k = (mu * y + s) / (m + mu * tau * q)
@@ -237,11 +237,8 @@ class ConstrainedBDCA(BDCA):
                 
                 # Compute right-hand side of the condition
                 rhs = alpha * np.linalg.norm(d_k, 'fro') ** 2
-                try:
-                    d = phi_k - lambda_val ** 2 * rhs
-                except:
-                    import pdb; pdb.set_trace()
-                
+                d = phi_k - lambda_val ** 2 * rhs
+
                 # Line search
                 search_iter = 0
                 while cost_pen > d and search_iter < max_search:
@@ -266,5 +263,17 @@ class ConstrainedBDCA(BDCA):
 
 
 class ConstrainedBDCAV2(BaseConstrainedBDCAV2):
-    def _inner_loop(self, a, x, mu, proj_func, use_self_adaptive):
-        return ConstrainedBDCA._inner_loop(self, a, x, mu, proj_func, use_self_adaptive)
+    def _inner_loop(self, a, x, mu, proj_func, ord, use_self_adaptive):
+        return ConstrainedBDCA._inner_loop(self, a, x, mu, proj_func, ord, use_self_adaptive)
+
+    def _compute_cost(self, a, x, ord=1):
+        return cost(a, x, ord)
+
+    def _compute_cost_pen_opt(self, a, x, ord, mu, proj_func):
+        return cost_pen_opt(a, x, mu, ord, proj_func)
+
+    def _compute_w(self, x, a, proj_func, mu=None, ord=1):
+        return DCA._compute_w(self, x, a, proj_func, mu, ord)
+    
+    def _compute_z(self, x, a, proj_func, mu=None, ord=1):
+        return DCA._compute_z(self, x, a, proj_func, mu, ord)
