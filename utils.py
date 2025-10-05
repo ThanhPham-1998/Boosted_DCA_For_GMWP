@@ -410,5 +410,5 @@ def profiler(func):
         result = func(*args, **kwargs)
         end_time = time()
         print(f"{func.__name__} took {end_time - start_time:.4f} seconds")
-        return result
+        return result, end_time - start_time
     return wrapper

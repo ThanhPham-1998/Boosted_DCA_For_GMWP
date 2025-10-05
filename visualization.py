@@ -93,7 +93,7 @@ def plot_clusters(a, x, indices=None, colors=None):
     return fig
 
 
-def plot_convergence(iter_logs, norm_type='L2'):
+def plot_convergence(iter_logs, norm_type=1):
     """
     Plot convergence of the optimization algorithm.
     
@@ -143,7 +143,7 @@ def plot_convergence(iter_logs, norm_type='L2'):
             costs = iter_logs[i]['cost']
             ax4.plot(costs, label=f'Outer Iter {i}')
         ax4.set_xlabel('Inner Iteration')
-        ax4.set_ylabel(f'{norm_type} Cost')
+        ax4.set_ylabel(f'L{norm_type} Cost')
         ax4.set_title('Cost Values')
         ax4.set_yscale('log')
         ax4.grid(True)
