@@ -6,7 +6,8 @@ from algorithms import BDCA, DCA, ConstrainedBDCA, ConstrainedDCA, ConstrainedBD
 from visualization import plot_clusters, plot_convergence, generate_solution_movie, generate_random_colors
 from utils import project_onto_linf_ball, project_onto_l1_ball
 
-random.seed(1111)
+np.random.seed(1111)
+random.seed(42)
 
 
 st.set_page_config(page_title="Boosted DCA Algorithms", layout="wide")
@@ -73,25 +74,25 @@ else:
     for i in range(num_clusters):
         col1, col2 = st.sidebar.columns(2)
         with col1:
-            x_val = st.number_input(f"Cụm {i+1} - X", value=float(np.random.rand()), key=f"x_{i}")
+            x_val = st.number_input(f"Cụm {i+1} - X", key=f"x_{i}")
         with col2:
-            y_val = st.number_input(f"Cụm {i+1} - Y", value=float(np.random.rand()), key=f"y_{i}")
+            y_val = st.number_input(f"Cụm {i+1} - Y", key=f"y_{i}")
         centers.append([x_val, y_val])
     centers = np.array(centers)
 
 st.sidebar.markdown("### 📊 Dữ liệu (Points)")
 data_mode = st.sidebar.radio("Cách tạo dữ liệu", ["Random", "Nhập thủ công"])
 if data_mode == "Random":
-    a = np.random.rand(num_points, 2)
+    a = 2 + 2.5 * np.random.randn(100, 2)
 else:
     st.sidebar.markdown("Nhập tọa độ từng điểm (x, y):")
     a = []
     for i in range(num_points):
         col1, col2 = st.sidebar.columns(2)
         with col1:
-            x_val = st.number_input(f"Điểm {i+1} - X", value=float(np.random.rand()), key=f"px_{i}")
+            x_val = st.number_input(f"Điểm {i+1} - X", key=f"px_{i}")
         with col2:
-            y_val = st.number_input(f"Điểm {i+1} - Y", value=float(np.random.rand()), key=f"py_{i}")
+            y_val = st.number_input(f"Điểm {i+1} - Y", key=f"py_{i}")
         a.append([x_val, y_val])
     a = np.array(a)
 
