@@ -22,13 +22,13 @@ Generalized Multi-Source Weber Problems (GMWP) — một bài toán tối ưu ph
 
 ### 3. Cài đặt dependencies
 
-```bash
-pip install -r requirements.txt
-```
+    ```bash
+    pip install -r requirements.txt
+    ```
 
 ### 4. UI
 
 ```bash
-streamlist run app.py
+    streamlist run app.py
 
 ```
