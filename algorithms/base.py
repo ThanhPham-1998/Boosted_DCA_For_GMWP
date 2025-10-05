@@ -9,7 +9,7 @@ import numpy as np
 from typing import List
 
 from config import BaseConfig
-from utils import update_mu_exponential
+from utils import update_mu_exponential, profiler
 
 
 class BaseDCA:
@@ -48,6 +48,7 @@ class BaseDCA:
         self.config.update_params(parameters, save_log=True)
         # self.config.save_log()
 
+    @profiler
     def run(self, a, x_init, proj_func, ord=1):
         return self._outer_loop(a, x_init, proj_func, ord=1)
 
@@ -201,6 +202,7 @@ class BaseBDCA(BaseDCA):
         # Update with user-provided parameters
         self.config.update_params(parameters, save_log=True)
 
+    @profiler
     def run(self, a, x_init, proj_func, ord, use_self_adaptive=True):
         """
         Run the BDCA algorithm.
@@ -342,6 +344,7 @@ class BaseConstrainedDCA(BaseDCA):
         # Update with user-provided parameters
         self.config.update_params(parameters, save_log=True)
     
+    @profiler
     def run(self, a, x_init, proj_func, ord=1, use_self_adaptive=True):
         """
         Run the Constrained DCA algorithm.
@@ -475,6 +478,7 @@ class BaseConstrainedBDCA(BaseBDCA):
         if parameters is not None:
             self.config.update_params(parameters, save_log=True)
     
+    @profiler
     def run(self, a, x_init, proj_func, use_self_adaptive=True):
         """
         Run the Constrained BDCA algorithm.
@@ -569,6 +573,7 @@ class BaseConstrainedBDCA(BaseBDCA):
 
 
 class BaseConstrainedBDCAV2(BaseBDCA):
+    @profiler
     def run(self, a, x_init, proj_func, use_self_adaptive=True):
         """
         Run the Constrained BDCA algorithm.
@@ -588,7 +593,8 @@ class BaseConstrainedBDCAV2(BaseBDCA):
         muf = self.config.parameters.muf
         delta = self.config.parameters.delta
         tau = self.config.parameters.tau
-        sigma = self.config.parameters.sigma
+        tauf = self.config.parameters.tauf
+        sigma = self.config.parameters.sig
         
         x = x_init.copy()
         x_old = x.copy()
@@ -599,7 +605,13 @@ class BaseConstrainedBDCAV2(BaseBDCA):
         
         while flag:
             # Run inner loop
-            x, inner_iter, dca_norms, cost_norms, search_iters, lambda_iter, solution = self._inner_loop(a, x, mu, proj_func, use_self_adaptive)
+            x, inner_iter, dca_norms, cost_norms, search_iters, lambda_iter, solution = self._inner_loop(
+                a=a,
+                x=x,
+                mu=mu,
+                proj_func=proj_func,
+                use_self_adaptive=use_self_adaptive
+            )
             iter_logs[iter_count] = {"mu": mu}
             # Compute norm of the difference
             norm_diff = np.linalg.norm(x_old - x, 'fro')
@@ -611,7 +623,7 @@ class BaseConstrainedBDCAV2(BaseBDCA):
             mu = max(mu * delta, muf)
             self.config.parameters.tau = sigma * tau
             # Check convergence
-            flag = norm_diff >= self.config.parameters.outer_norm and mu > muf
+            flag = norm_diff >= self.config.parameters.outer_norm and mu > muf and tau < tauf
             # Store iteration logs
             iter_logs[iter_count]['inner_iter'] = inner_iter
             iter_logs[iter_count]['outer_norm'] = norm_diff

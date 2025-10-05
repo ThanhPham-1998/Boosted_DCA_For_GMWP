@@ -8,6 +8,8 @@ including projection operators and file handling.
 import numpy as np
 import os
 import datetime
+import functools
+from time import time
 
 
 def project_onto_l1_ball(x, radius=1.0):
@@ -399,3 +401,14 @@ def update_mu_adaptive(mu, cost_new, cost_old, mu_min=1e-6, threshold=0.01, cons
         if rel_change < threshold:
             mu *= const
     return max(mu, mu_min)
+
+
+def profiler(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        start_time = time()
+        result = func(*args, **kwargs)
+        end_time = time()
+        print(f"{func.__name__} took {end_time - start_time:.4f} seconds")
+        return result
+    return wrapper
